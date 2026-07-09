@@ -1,0 +1,76 @@
+{
+    "subjects": [
+        {
+            "owner": "16ratneshkumar",
+            "repo": "Artificial-Intelligence",
+            "name": "Artificial Intelligence",
+            "description": "Search algorithms, knowledge representation, planning, perception, and intelligent agent design.",
+            "type": "subject",
+            "icon": "🤖",
+            "degree": "Bachelor of Computer Science",
+            "semester": "Semester 6",
+            "progress": "complete",
+            "tags": ["ai", "machine learning", "advanced"]
+        },
+        {
+            "owner": "16ratneshkumar",
+            "repo": "Cloud-Computing",
+            "name": "Cloud Computing",
+            "description": "Cloud service models (IaaS, PaaS, SaaS), virtualization, containers, and cloud security.",
+            "type": "subject",
+            "icon": "☁️",
+            "degree": "Bachelor of Computer Science",
+            "semester": "Semester 6",
+            "progress": "complete",
+            "isNew": false,
+            "tags": ["cloud", "devops", "systems"]
+        },
+        {
+            "owner": "16ratneshkumar",
+            "repo": "Machine-Learning",
+            "name": "Machine Learning",
+            "description": "Supervised, unsupervised, and reinforcement learning with model evaluation and feature engineering.",
+            "type": "subject",
+            "icon": "🧠",
+            "degree": "Bachelor of Computer Science",
+            "semester": "Semester 6",
+            "progress": "complete",
+            "tags": ["machine learning", "ai", "python", "advanced"]
+        },
+        {
+            "owner": "16ratneshkumar",
+            "repo": "Research-Methodology",
+            "name": "Research Methodology",
+            "description": "Scientific research methods, paper writing, literature review, and academic publishing standards.",
+            "type": "subject",
+            "icon": "📚",
+            "degree": "Bachelor of Computer Science",
+            "semester": "Semester 6",
+            "progress": "complete",
+            "tags": ["research", "academic", "writing"]
+        },
+        {
+            "owner": "16ratneshkumar",
+            "repo": "Embedded-Protocols",
+            "name": "Embedded Protocols",
+            "description": "I2C, SPI, UART, CAN and other embedded communication protocols for hardware interfacing.",
+            "type": "course",
+            "degree": "Embedded Protocols",
+            "semester": "NA",
+            "icon": "📡",
+            "progress": "complete",
+            "tags": ["embedded", "hardware", "protocols"]
+        }
+    ],
+    "practicals": [
+        {
+            "owner": "16ratneshkumar",
+            "repo": "Bachelor-Practicals",
+            "name": "Bachelor's Practical",
+            "description": "Semester-wise practicals for all Computer Science subjects – lab assignments and experiments.",
+            "type": "practical",
+            "icon": "💻",
+            "tags": ["practical", "lab", "programming"]
+        }
+    ]
+}
