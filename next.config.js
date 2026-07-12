@@ -43,8 +43,8 @@ const nextConfig = {
                             "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net",
                             // Images: self + GitHub raw content
                             "img-src 'self' data: https://raw.githubusercontent.com",
-                            // API calls: self + GitHub API + Upstash
-                            "connect-src 'self' https://api.github.com https://*.upstash.io",
+                            // API calls: self + GitHub API + Upstash + Vercel Analytics
+                            "connect-src 'self' https://api.github.com https://*.upstash.io https://vitals.vercel-analytics.com",
                             // No frames, objects, or base overrides
                             "frame-ancestors 'none'",
                             "object-src 'none'",

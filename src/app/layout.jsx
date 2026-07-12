@@ -4,6 +4,7 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { ThemeProvider } from '@/contexts/ThemeContext'
 import SponsorPopupController from '@/components/SponsorPopupController'
+import { Analytics } from '@vercel/analytics/next'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
@@ -36,6 +37,7 @@ export default function RootLayout({ children }) {
           </div>
           <SponsorPopupController />
         </ThemeProvider>
+        <Analytics />
         {/* Scripts */}
         <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
