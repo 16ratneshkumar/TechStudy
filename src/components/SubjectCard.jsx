@@ -1,24 +1,21 @@
 'use client';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function SubjectCard({ subject, href, backHref }) {
     const router = useRouter();
     const tags = subject.tags || [];
 
-    const handleCardClick = () => {
-        if (!href) return;
-
-        const target = backHref ? `${href}${href.includes('?') ? '&' : '?'}back=${encodeURIComponent(backHref)}` : href;
-        router.push(target);
-    };
+    const target = backHref ? `${href}${href.includes('?') ? '&' : '?'}back=${encodeURIComponent(backHref)}` : href;
 
     const handleTagClick = (e, tag) => {
+        e.preventDefault();
         e.stopPropagation();
         router.push(`/tags/${encodeURIComponent(tag)}`);
     };
 
-    return (
-        <div className="subject-card" onClick={handleCardClick} style={{ cursor: 'pointer', position: 'relative', overflow: 'hidden' }}>
+    const innerContent = (
+        <>
             <div className="subject-card-glow"></div>
             
             {subject.isNew && (
@@ -70,7 +67,7 @@ export default function SubjectCard({ subject, href, backHref }) {
                                 key={tag}
                                 onClick={(e) => handleTagClick(e, tag)}
                                 className="tag-badge"
-                                style={{ border: '1px solid rgba(59, 130, 246, 0.2)', background: 'rgba(59, 130, 246, 0.08)' }}
+                                style={{ border: '1px solid rgba(59, 130, 246, 0.2)', background: 'rgba(59, 130, 246, 0.08)', position: 'relative', zIndex: 20 }}
                             >
                                 #{tag}
                             </button>
@@ -87,6 +84,20 @@ export default function SubjectCard({ subject, href, backHref }) {
                     </svg>
                 </div>
             </div>
-        </div>
+        </>
+    );
+
+    if (!href) {
+        return (
+            <div className="subject-card" style={{ position: 'relative', overflow: 'hidden' }}>
+                {innerContent}
+            </div>
+        );
+    }
+
+    return (
+        <Link href={target} className="subject-card" style={{ position: 'relative', overflow: 'hidden', display: 'block', textDecoration: 'none' }}>
+            {innerContent}
+        </Link>
     );
 }

@@ -78,7 +78,7 @@ export default async function DegreeNotesPage({ params }) {
                             {grouped[semester].map(subject => (
                                 <SubjectCard
                                     key={`${subject.owner}-${subject.repo}`}
-                                    href={`/notes/${subject.repo}`}
+                                    href={`/notes/${encodeURIComponent(subject.repo)}`}
                                     backHref={`/notes/degree/${slug}`}
                                     subject={{
                                         ...subject,

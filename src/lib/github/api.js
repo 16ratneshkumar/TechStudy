@@ -94,7 +94,9 @@ async function apiFetchRaw(path, responseType = 'text') {
         throw new Error('GITHUB_TOKEN is not set. Please add it to your .env file.');
     }
 
-    const response = await fetch(`https://api.github.com${path}`, {
+    // Append query param to prevent Next.js fetch cache collision with JSON requests
+    const separator = path.includes('?') ? '&' : '?';
+    const response = await fetch(`https://api.github.com${path}${separator}_raw=1`, {
         headers: {
             'Accept': RAW_ACCEPT_HEADER,
             'Authorization': `token ${GITHUB_TOKEN}`,

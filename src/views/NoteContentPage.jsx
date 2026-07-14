@@ -24,9 +24,12 @@ function escapeHtml(str) {
 
 export default async function NoteContentPage({ params, searchParams }) {
     const { subject: subjectParam, path: encodedPathArray } = await params;
+    const resolvedSearchParams = await searchParams;
     const path = encodedPathArray.map(decodeURIComponent);
     const itemPath = path.join('/');
-    const backPath = typeof searchParams?.back === 'string' && searchParams.back ? searchParams.back : `/notes/${subjectParam}`;
+    const encodePathForUrl = (value = '') => value.split('/').map(encodeURIComponent).join('/');
+    const encodeSegmentsForUrl = (segments = []) => segments.map(encodeURIComponent).join('/');
+    const backPath = typeof resolvedSearchParams?.back === 'string' && resolvedSearchParams.back ? resolvedSearchParams.back : `/notes/${subjectParam}`;
 
     const courses = repositoriesConfig.courses || [];
     const subjects = repositoriesConfig.subjects || [];
@@ -42,8 +45,13 @@ export default async function NoteContentPage({ params, searchParams }) {
     const currentIndex = siblingItems.findIndex(note => note.path === itemPath || note.name === path[path.length - 1]);
     const previousItem = currentIndex > 0 ? siblingItems[currentIndex - 1] : null;
     const nextItem = currentIndex >= 0 && currentIndex < siblingItems.length - 1 ? siblingItems[currentIndex + 1] : null;
-    const previousHref = previousItem ? `/notes/${subjectParam}/${path.slice(0, -1).join('/')}${path.length > 1 ? '/' : ''}${previousItem.name}?back=${encodeURIComponent(backPath)}` : null;
-    const nextHref = nextItem ? `/notes/${subjectParam}/${path.slice(0, -1).join('/')}${path.length > 1 ? '/' : ''}${nextItem.name}?back=${encodeURIComponent(backPath)}` : null;
+    const parentPathEncoded = encodeSegmentsForUrl(path.slice(0, -1));
+    const previousHref = previousItem
+        ? `/notes/${encodeURIComponent(subjectParam)}/${parentPathEncoded ? `${parentPathEncoded}/` : ''}${encodeURIComponent(previousItem.name)}?back=${encodeURIComponent(backPath)}`
+        : null;
+    const nextHref = nextItem
+        ? `/notes/${encodeURIComponent(subjectParam)}/${parentPathEncoded ? `${parentPathEncoded}/` : ''}${encodeURIComponent(nextItem.name)}?back=${encodeURIComponent(backPath)}`
+        : null;
 
     if (subject.progress === 'progress') {
         return (
@@ -166,7 +174,7 @@ export default async function NoteContentPage({ params, searchParams }) {
                                         <FolderCard
                                             key={folder.sha}
                                             folder={folder}
-                                            href={`/notes/${subjectParam}/${itemPath}/${folder.name}`}
+                                            href={`/notes/${encodeURIComponent(subjectParam)}/${encodePathForUrl(itemPath)}/${encodeURIComponent(folder.name)}`}
                                         />
                                     ))}
                                 </div>
@@ -181,7 +189,7 @@ export default async function NoteContentPage({ params, searchParams }) {
                                     {items.filter(n => n.type !== 'dir').map(file => (
                                         <Link
                                             key={file.sha}
-                                            href={`/notes/${subjectParam}/${itemPath}/${file.name}`}
+                                            href={`/notes/${encodeURIComponent(subjectParam)}/${encodePathForUrl(itemPath)}/${encodeURIComponent(file.name)}`}
                                             style={{ textDecoration: 'none', color: 'inherit' }}
                                         >
                                             <NoteCard note={file} />

@@ -7,6 +7,7 @@ import { notFound } from 'next/navigation';
 
 export default async function SubjectPracticalsPage({ params }) {
     const { practical: practicalParam } = await params;
+    const encodePathForUrl = (value = '') => value.split('/').map(encodeURIComponent).join('/');
     const practicals = repositoriesConfig.practicals || [];
     const practical = practicals.find(s => s.repo.toLowerCase() === practicalParam.toLowerCase());
 
@@ -66,7 +67,7 @@ export default async function SubjectPracticalsPage({ params }) {
                                         <FolderCard
                                             key={folder.sha}
                                             folder={folder}
-                                            href={`/practicals/${practicalParam}/${folder.path}`}
+                                            href={`/practicals/${encodeURIComponent(practicalParam)}/${encodePathForUrl(folder.path)}`}
                                         />
                                     ))}
                                 </div>
@@ -81,7 +82,7 @@ export default async function SubjectPracticalsPage({ params }) {
                                     {notes.filter(n => n.type !== 'dir').map(file => (
                                         <Link
                                             key={file.sha}
-                                            href={`/practicals/${practicalParam}/${file.path}`}
+                                            href={`/practicals/${encodeURIComponent(practicalParam)}/${encodePathForUrl(file.path)}`}
                                             style={{ textDecoration: 'none', color: 'inherit' }}
                                         >
                                             <NoteCard note={file} />
@@ -96,4 +97,3 @@ export default async function SubjectPracticalsPage({ params }) {
         </main>
     );
 }
-

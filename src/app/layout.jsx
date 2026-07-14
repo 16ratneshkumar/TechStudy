@@ -16,9 +16,26 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={inter.variable} data-scroll-behavior="smooth">
+    <html lang="en" className={inter.variable} data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var saved = localStorage.getItem('studynotes_theme');
+                  if (saved) {
+                    document.documentElement.setAttribute('data-theme', saved);
+                  } else {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('studynotes_theme', 'dark');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
         {/* Google AdSense Auto Ads — production only */}
         {process.env.NODE_ENV === 'production' && (
           <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5921546663704892" crossOrigin="anonymous"></script>

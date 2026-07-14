@@ -3,24 +3,28 @@ import { createContext, useContext, useState, useEffect } from 'react';
 const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
-    const [isDarkMode, setIsDarkMode] = useState(true);
+    const [theme, setTheme] = useState('dark');
 
+    // On mount, sync the React state with the DOM (which was already set by the inline script in layout.jsx)
     useEffect(() => {
-        // Restore saved preference; if none exists, default is dark
-        const saved = localStorage.getItem('studynotes_theme');
-        if (saved) {
-            setIsDarkMode(saved === 'dark');
-        }
-        // No saved preference → stays dark (initial state)
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+        setTheme(currentTheme);
     }, []);
 
+    // Whenever the theme state changes (via the button), update the DOM and localStorage
     useEffect(() => {
-        const theme = isDarkMode ? 'dark' : 'light';
-        localStorage.setItem('studynotes_theme', theme);
         document.documentElement.setAttribute('data-theme', theme);
-    }, [isDarkMode]);
+        try {
+            localStorage.setItem('studynotes_theme', theme);
+        } catch (e) {
+            console.error("Failed to save theme to localStorage", e);
+        }
+    }, [theme]);
 
-    const toggleTheme = () => setIsDarkMode(prev => !prev);
+    const isDarkMode = theme === 'dark';
+    const toggleTheme = () => {
+        setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
+    };
 
     return (
         <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>

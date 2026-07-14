@@ -26,6 +26,7 @@ export default async function SubjectNotesPage({ params, searchParams }) {
         : null;
     const backPath = degreeBackPath || (typeof resolvedSearchParams?.back === 'string' && resolvedSearchParams.back ? resolvedSearchParams.back : '/notes');
     const noteBackPath = `/notes/${subjectParam}`;
+    const encodePathForUrl = (value = '') => value.split('/').map(encodeURIComponent).join('/');
 
     if (subject.progress === 'progress') {
         return (
@@ -99,7 +100,7 @@ export default async function SubjectNotesPage({ params, searchParams }) {
                                         <FolderCard
                                             key={folder.sha}
                                             folder={folder}
-                                            href={`/notes/${subjectParam}/${folder.path}?back=${encodeURIComponent(noteBackPath)}`}
+                                            href={`/notes/${encodeURIComponent(subjectParam)}/${encodePathForUrl(folder.path)}?back=${encodeURIComponent(noteBackPath)}`}
                                         />
                                     ))}
                                 </div>
@@ -115,7 +116,7 @@ export default async function SubjectNotesPage({ params, searchParams }) {
                                     {notes.filter(n => n.type !== 'dir').map(file => (
                                         <Link
                                             key={file.sha}
-                                            href={`/notes/${subjectParam}/${file.path}?back=${encodeURIComponent(noteBackPath)}`}
+                                            href={`/notes/${encodeURIComponent(subjectParam)}/${encodePathForUrl(file.path)}?back=${encodeURIComponent(noteBackPath)}`}
                                             style={{ textDecoration: 'none', color: 'inherit' }}
                                         >
                                             <NoteCard note={file} />
@@ -130,4 +131,3 @@ export default async function SubjectNotesPage({ params, searchParams }) {
         </main>
     );
 }
-
