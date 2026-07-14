@@ -2,16 +2,14 @@
 
 import { useEffect, useState } from 'react';
 
-/**
- * Displays and records the view count for a slug.
- * @param {string} slug - The identifier of the content whose views are displayed.
- * @returns {JSX.Element} The loading, error, or formatted view count display.
- */
 export default function ViewCounter({ slug }) {
     const [views, setViews] = useState(null);
 
     useEffect(() => {
         const sessionKey = `viewed_${slug}`;
+        let isActive = true;
+        const controller = new AbortController();
+        let timeoutId;
 
         let alreadyViewed = false;
         try {
@@ -21,8 +19,7 @@ export default function ViewCounter({ slug }) {
         }
 
         const fetchViews = async () => {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => {
+            timeoutId = setTimeout(() => {
                 controller.abort();
             }, 3000);
 
@@ -38,29 +35,43 @@ export default function ViewCounter({ slug }) {
                         signal: controller.signal
                     });
                 }
-                
+
                 if (res.ok) {
                     const data = await res.json();
-                    setViews(data.views);
-                    if (!alreadyViewed) {
-                        try {
-                            sessionStorage.setItem(sessionKey, 'true');
-                        } catch (err) {
-                            // ignore
+                    if (isActive) {
+                        setViews(data.views);
+                        if (!alreadyViewed) {
+                            try {
+                                sessionStorage.setItem(sessionKey, 'true');
+                            } catch (err) {
+                                // ignore
+                            }
                         }
                     }
                 } else {
-                    setViews('error');
+                    if (isActive) {
+                        setViews('error');
+                    }
                 }
                 clearTimeout(timeoutId);
             } catch (error) {
                 clearTimeout(timeoutId);
-                console.error('Failed to fetch/register view:', error);
-                setViews('error');
+                if (isActive) {
+                    console.error('Failed to fetch/register view:', error);
+                    setViews('error');
+                }
             }
         };
 
         fetchViews();
+
+        return () => {
+            isActive = false;
+            controller.abort();
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
+        };
     }, [slug]);
 
     if (views === null) {

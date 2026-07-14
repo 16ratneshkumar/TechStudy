@@ -2,18 +2,19 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 const ThemeContext = createContext();
 
-/**
- * Provides theme state and a toggle action to descendant components.
- * @param {React.ReactNode} children - Elements rendered within the theme provider.
- * @returns {React.ReactElement} The theme context provider containing the children.
- */
 export function ThemeProvider({ children }) {
-    const [theme, setTheme] = useState('dark');
+    const [theme, setTheme] = useState(() => {
+        // Lazily initialize from DOM attribute set by inline script
+        if (typeof document !== 'undefined') {
+            return document.documentElement.getAttribute('data-theme') || 'dark';
+        }
+        return 'dark';
+    });
+    const [mounted, setMounted] = useState(false);
 
-    // On mount, sync the React state with the DOM (which was already set by the inline script in layout.jsx)
+    // Set mounted flag after first render to prevent hydration mismatches
     useEffect(() => {
-        const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
-        setTheme(currentTheme);
+        setMounted(true);
     }, []);
 
     // Whenever the theme state changes (via the button), update the DOM and localStorage
@@ -32,7 +33,7 @@ export function ThemeProvider({ children }) {
     };
 
     return (
-        <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
+        <ThemeContext.Provider value={{ isDarkMode, toggleTheme, mounted }}>
             {children}
         </ThemeContext.Provider>
     );

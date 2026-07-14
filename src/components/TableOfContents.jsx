@@ -2,12 +2,6 @@
 
 import { useEffect, useState } from 'react';
 
-/**
- * Renders a table of contents from headings in the provided HTML content.
- * @param {Object} props - Component properties.
- * @param {string} props.html - HTML content from which to extract headings.
- * @returns {JSX.Element} A table of contents with navigation controls.
- */
 export default function TableOfContents({ html }) {
     const [headings, setHeadings] = useState([]);
     const [activeId, setActiveId] = useState('');
@@ -26,15 +20,16 @@ export default function TableOfContents({ html }) {
         let index = 0;
 
         try {
+            // Create a temporary element to decode HTML entities
+            const tempElement = document.createElement('div');
+
             while ((match = headingRegex.exec(html)) !== null) {
                 const level = parseInt(match[1], 10);
                 const rawText = match[2].replace(/<[^>]*>/g, '');
-                const text = rawText
-                    .replace(/&amp;/g, '&')
-                    .replace(/&lt;/g, '<')
-                    .replace(/&gt;/g, '>')
-                    .replace(/&quot;/g, '"')
-                    .replace(/&#039;/g, "'");
+
+                // Decode all HTML entities using browser's native decoder
+                tempElement.innerHTML = rawText;
+                const text = tempElement.textContent || tempElement.innerText || '';
 
                 parsed.push({
                     id: `toc-heading-${index}`,

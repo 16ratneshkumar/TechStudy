@@ -28,6 +28,7 @@ const nextConfig = {
     // Restricts script/style loading to known-safe origins only.
     // Add SRI hashes to layout.jsx tags for an additional layer of defence.
     async headers() {
+        const isDev = process.env.NODE_ENV === 'development';
         return [
             {
                 source: '/(.*)',
@@ -35,16 +36,16 @@ const nextConfig = {
                     {
                         key: 'Content-Security-Policy',
                         value: [
-                            // Scripts: self + CDN + inline/eval for Next.js hydration and HMR
-                            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://pagead2.googlesyndication.com",
+                            // Scripts: self + CDN; unsafe-eval and unsafe-inline only in dev
+                            `script-src 'self' ${isDev ? "'unsafe-inline' 'unsafe-eval'" : "'sha256-voIWx4S7/okxcA7jD66p3yh1AHgk0TqZlcuCcwjU0Jw='"} https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://pagead2.googlesyndication.com`,
                             // Styles: self + CDN origins
                             "style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://fonts.googleapis.com",
                             // Fonts
                             "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net",
                             // Images: self + GitHub raw content
                             "img-src 'self' data: https://raw.githubusercontent.com",
-                            // API calls: self + GitHub API + Upstash + HMR websockets in dev
-                            "connect-src 'self' https://api.github.com https://*.upstash.io ws: wss:",
+                            // API calls: self + GitHub API + Upstash; ws/wss only in dev
+                            `connect-src 'self' https://api.github.com https://*.upstash.io${isDev ? ' ws: wss:' : ''}`,
                             // No frames, objects, or base overrides
                             "frame-ancestors 'none'",
                             "object-src 'none'",
