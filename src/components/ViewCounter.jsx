@@ -2,6 +2,11 @@
 
 import { useEffect, useState } from 'react';
 
+/**
+ * Displays and records the view count for a slug.
+ * @param {string} slug - The identifier of the content whose views are displayed.
+ * @returns {JSX.Element} The loading, error, or formatted view count display.
+ */
 export default function ViewCounter({ slug }) {
     const [views, setViews] = useState(null);
 

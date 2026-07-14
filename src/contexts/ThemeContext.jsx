@@ -2,6 +2,11 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 const ThemeContext = createContext();
 
+/**
+ * Provides theme state and a toggle action to descendant components.
+ * @param {React.ReactNode} children - Elements rendered within the theme provider.
+ * @returns {React.ReactElement} The theme context provider containing the children.
+ */
 export function ThemeProvider({ children }) {
     const [theme, setTheme] = useState('dark');
 

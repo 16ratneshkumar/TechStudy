@@ -16,7 +16,13 @@ const ratelimit = redis
 // Matches note-path patterns like "bca/sem-1/maths" or "notes/intro.md"
 const SLUG_PATTERN = /^.+$/;
 
-// Helper to run promises with a timeout
+/**
+ * Bounds an asynchronous operation by providing a fallback value after a timeout.
+ * @param {Promise<*>} promise - The operation to await.
+ * @param {number} ms - The timeout duration in milliseconds.
+ * @param {*} defaultValue - The value to use if the operation times out.
+ * @return {Promise<*>} The operation's result or the fallback value.
+ */
 function withTimeout(promise, ms, defaultValue) {
     return Promise.race([
         promise,
@@ -24,6 +30,11 @@ function withTimeout(promise, ms, defaultValue) {
     ]);
 }
 
+/**
+ * Increments the page-view count for a slug.
+ * @param {Request} request - The request containing the slug in its JSON body.
+ * @return {NextResponse} A response containing the updated view count or an error message.
+ */
 export async function POST(request) {
     if (!redis) {
         return NextResponse.json({ error: 'Redis is not configured', views: 0 }, { status: 200 });
@@ -64,6 +75,11 @@ export async function POST(request) {
     }
 }
 
+/**
+ * Retrieves the view count for a page identified by its slug.
+ * @param {Request} request - The request containing the page slug in its query parameters.
+ * @returns {NextResponse} A response containing the view count, or an error message with a zero count.
+ */
 export async function GET(request) {
     if (!redis) {
         return NextResponse.json({ error: 'Redis is not configured', views: 0 }, { status: 200 });

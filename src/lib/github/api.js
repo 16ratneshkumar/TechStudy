@@ -72,7 +72,10 @@ async function apiFetch(path) {
 }
 
 /**
- * Fetch helper for raw file content (text or binary)
+ * Fetch raw file content as text or binary data.
+ * @param {string} path - The GitHub API path for the file.
+ * @param {'text'|'arrayBuffer'} [responseType='text'] - The format of the returned content.
+ * @returns {Promise<string|ArrayBuffer>} The file content as text or an array buffer.
  */
 async function apiFetchRaw(path, responseType = 'text') {
     const isServer = typeof window === 'undefined';
