@@ -10,6 +10,12 @@ export function ThemeProvider({ children }) {
         }
         return 'dark';
     });
+    const [mounted, setMounted] = useState(false);
+
+    // Set mounted flag after first render to prevent hydration mismatches
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     // Whenever the theme state changes (via the button), update the DOM and localStorage
     useEffect(() => {
@@ -27,7 +33,7 @@ export function ThemeProvider({ children }) {
     };
 
     return (
-        <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
+        <ThemeContext.Provider value={{ isDarkMode, toggleTheme, mounted }}>
             {children}
         </ThemeContext.Provider>
     );

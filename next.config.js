@@ -37,7 +37,7 @@ const nextConfig = {
                         key: 'Content-Security-Policy',
                         value: [
                             // Scripts: self + CDN; unsafe-eval and unsafe-inline only in dev
-                            `script-src 'self' ${isDev ? "'unsafe-inline' 'unsafe-eval'" : "'sha256-gM6Qy3vz9F2zQH9L8OQXBdLn3fR3lv3IaVPlkUlW7KY='"} https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://pagead2.googlesyndication.com`,
+                            `script-src 'self' ${isDev ? "'unsafe-inline' 'unsafe-eval'" : "'sha256-voIWx4S7/okxcA7jD66p3yh1AHgk0TqZlcuCcwjU0Jw='"} https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://pagead2.googlesyndication.com`,
                             // Styles: self + CDN origins
                             "style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://fonts.googleapis.com",
                             // Fonts

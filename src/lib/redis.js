@@ -32,8 +32,6 @@ export const redis = url && token
     ? new Redis({
         url,
         token,
-        options: {
-            requester: new TimeoutRequester()
-        }
+        requester: new TimeoutRequester()
     })
     : null;
