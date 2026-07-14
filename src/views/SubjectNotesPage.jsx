@@ -6,6 +6,12 @@ import repositoriesConfig from '@/data/repositories.json';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+/**
+ * Renders the notes page for a subject or course.
+ * @param {{ params: Promise<{ subject: string }>, searchParams: Promise<{ back?: string }> }} props - Route and query parameters.
+ * @returns {Promise<JSX.Element>} The subject notes page.
+ * @throws {Error} If notes cannot be loaded from the repository.
+ */
 export default async function SubjectNotesPage({ params, searchParams }) {
     const { subject: subjectParam } = await params;
     const resolvedSearchParams = await searchParams;

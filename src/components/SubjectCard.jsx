@@ -2,6 +2,13 @@
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
+/**
+ * Render a subject card with optional navigation and tag links.
+ * @param {Object} subject - Subject data displayed by the card.
+ * @param {string} [href] - Destination for the card when provided.
+ * @param {string} [backHref] - URL included as a back-navigation query parameter.
+ * @returns {JSX.Element} The rendered subject card.
+ */
 export default function SubjectCard({ subject, href, backHref }) {
     const router = useRouter();
     const tags = subject.tags || [];

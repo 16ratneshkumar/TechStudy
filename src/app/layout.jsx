@@ -14,6 +14,11 @@ export const metadata = {
   description: 'TechStudy - Browse and read Computer Science notes from GitHub repositories.',
 }
 
+/**
+ * Defines the application's root HTML structure and shared layout.
+ * @param {import('react').ReactNode} children - The page content rendered within the shared navigation and footer.
+ * @returns {JSX.Element} The root application layout.
+ */
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={inter.variable} data-scroll-behavior="smooth" suppressHydrationWarning>

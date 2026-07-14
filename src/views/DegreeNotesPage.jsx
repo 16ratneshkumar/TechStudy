@@ -3,6 +3,11 @@ import BackButton from '@/components/BackButton';
 import repositoriesConfig from '@/data/repositories.json';
 import Link from 'next/link';
 
+/**
+ * Renders the notes page for a degree identified by its URL slug.
+ * @param {{ slug: string }} params - Route parameters containing the encoded degree slug.
+ * @return {JSX.Element} The degree notes page, or a not-found page when the degree does not exist.
+ */
 export default async function DegreeNotesPage({ params }) {
     const { slug } = await params;
     const decodedSlug = decodeURIComponent(slug);

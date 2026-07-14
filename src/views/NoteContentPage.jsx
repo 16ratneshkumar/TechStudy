@@ -22,6 +22,13 @@ function escapeHtml(str) {
         .replace(/'/g, '&#039;');
 }
 
+/**
+ * Renders a repository note, folder, or supported file with navigation and content-specific viewers.
+ * @param {Object} props - The page parameters and query values.
+ * @param {Promise<Object>} props.params - Route parameters containing the subject and encoded path segments.
+ * @param {Promise<Object>} props.searchParams - Query parameters, including an optional back-navigation path.
+ * @returns {JSX.Element} The rendered note content page.
+ */
 export default async function NoteContentPage({ params, searchParams }) {
     const { subject: subjectParam, path: encodedPathArray } = await params;
     const resolvedSearchParams = await searchParams;

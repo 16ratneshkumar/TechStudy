@@ -2,6 +2,12 @@
 
 import { useEffect, useState } from 'react';
 
+/**
+ * Renders a table of contents from headings in the provided HTML content.
+ * @param {Object} props - Component properties.
+ * @param {string} props.html - HTML content from which to extract headings.
+ * @returns {JSX.Element} A table of contents with navigation controls.
+ */
 export default function TableOfContents({ html }) {
     const [headings, setHeadings] = useState([]);
     const [activeId, setActiveId] = useState('');

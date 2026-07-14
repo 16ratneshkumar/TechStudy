@@ -5,6 +5,11 @@ import repositoriesConfig from '@/data/repositories.json';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+/**
+ * Renders a practical detail page with its folders and files.
+ * @param {Object} params - Dynamic route parameters containing the practical repository identifier.
+ * @return {JSX.Element} The practical detail page.
+ */
 export default async function SubjectPracticalsPage({ params }) {
     const { practical: practicalParam } = await params;
     const encodePathForUrl = (value = '') => value.split('/').map(encodeURIComponent).join('/');

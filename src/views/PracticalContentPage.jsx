@@ -19,6 +19,11 @@ function escapeHtml(str) {
         .replace(/'/g, '&#039;');
 }
 
+/**
+ * Render a practical repository file or directory with navigation and content previews.
+ * @param {Object} params - Route parameters containing the practical repository name and path segments.
+ * @returns {JSX.Element} The rendered practical content page.
+ */
 export default async function PracticalContentPage({ params }) {
     const { practical: practicalParam, path: encodedPathArray } = await params;
     const path = encodedPathArray.map(decodeURIComponent);

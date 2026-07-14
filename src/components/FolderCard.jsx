@@ -1,6 +1,13 @@
 'use client';
 import Link from 'next/link';
 
+/**
+ * Render a folder card with optional navigation and return-path support.
+ * @param {{ name: string }} folder - Folder data whose name is displayed on the card.
+ * @param {string} [href] - Destination URL for the card.
+ * @param {string} [backHref] - URL to append as an encoded `back` query parameter.
+ * @return {JSX.Element} The rendered folder card.
+ */
 export default function FolderCard({ folder, href, backHref }) {
     const target = backHref ? `${href}${href.includes('?') ? '&' : '?'}back=${encodeURIComponent(backHref)}` : href;
 
