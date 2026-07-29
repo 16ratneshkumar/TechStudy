@@ -35,16 +35,16 @@ const nextConfig = {
                     {
                         key: 'Content-Security-Policy',
                         value: [
-                            // Scripts: self + exact CDN origins only
-                            "script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://pagead2.googlesyndication.com",
+                            // Scripts: self + CDN + inline/eval for Next.js hydration and HMR
+                            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://pagead2.googlesyndication.com",
                             // Styles: self + CDN origins
                             "style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://fonts.googleapis.com",
                             // Fonts
                             "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net",
                             // Images: self + GitHub raw content
                             "img-src 'self' data: https://raw.githubusercontent.com",
-                            // API calls: self + GitHub API + Upstash + Vercel Analytics
-                            "connect-src 'self' https://api.github.com https://*.upstash.io https://vitals.vercel-analytics.com",
+                            // API calls: self + GitHub API + Upstash + HMR websockets in dev
+                            "connect-src 'self' https://api.github.com https://*.upstash.io ws: wss:",
                             // No frames, objects, or base overrides
                             "frame-ancestors 'none'",
                             "object-src 'none'",

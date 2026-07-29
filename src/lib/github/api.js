@@ -72,7 +72,10 @@ async function apiFetch(path) {
 }
 
 /**
- * Fetch helper for raw file content (text or binary)
+ * Fetch raw file content as text or binary data.
+ * @param {string} path - The GitHub API path for the file.
+ * @param {'text'|'arrayBuffer'} [responseType='text'] - The format of the returned content.
+ * @returns {Promise<string|ArrayBuffer>} The file content as text or an array buffer.
  */
 async function apiFetchRaw(path, responseType = 'text') {
     const isServer = typeof window === 'undefined';
@@ -94,7 +97,9 @@ async function apiFetchRaw(path, responseType = 'text') {
         throw new Error('GITHUB_TOKEN is not set. Please add it to your .env file.');
     }
 
-    const response = await fetch(`https://api.github.com${path}`, {
+    // Append query param to prevent Next.js fetch cache collision with JSON requests
+    const separator = path.includes('?') ? '&' : '?';
+    const response = await fetch(`https://api.github.com${path}${separator}_raw=1`, {
         headers: {
             'Accept': RAW_ACCEPT_HEADER,
             'Authorization': `token ${GITHUB_TOKEN}`,

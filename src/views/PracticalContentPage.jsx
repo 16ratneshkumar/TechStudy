@@ -19,10 +19,17 @@ function escapeHtml(str) {
         .replace(/'/g, '&#039;');
 }
 
+/**
+ * Render a practical repository file or directory with navigation and content previews.
+ * @param {Object} params - Route parameters containing the practical repository name and path segments.
+ * @returns {JSX.Element} The rendered practical content page.
+ */
 export default async function PracticalContentPage({ params }) {
     const { practical: practicalParam, path: encodedPathArray } = await params;
     const path = encodedPathArray.map(decodeURIComponent);
     const itemPath = path.join('/');
+    const encodePathForUrl = (value = '') => value.split('/').map(encodeURIComponent).join('/');
+    const encodeSegmentsForUrl = (segments = []) => segments.map(encodeURIComponent).join('/');
 
     const practicals = repositoriesConfig.practicals || [];
     const practical = practicals.find(s => s.repo.toLowerCase() === practicalParam.toLowerCase());
@@ -88,8 +95,13 @@ export default async function PracticalContentPage({ params }) {
     const currentIndex = siblingItems.findIndex(note => note.path === itemPath || note.name === path[path.length - 1]);
     const previousItem = currentIndex > 0 ? siblingItems[currentIndex - 1] : null;
     const nextItem = currentIndex >= 0 && currentIndex < siblingItems.length - 1 ? siblingItems[currentIndex + 1] : null;
-    const previousHref = previousItem ? `/practicals/${practicalParam}/${path.slice(0, -1).join('/')}${path.length > 1 ? '/' : ''}${previousItem.name}` : null;
-    const nextHref = nextItem ? `/practicals/${practicalParam}/${path.slice(0, -1).join('/')}${path.length > 1 ? '/' : ''}${nextItem.name}` : null;
+    const parentPathEncoded = encodeSegmentsForUrl(path.slice(0, -1));
+    const previousHref = previousItem
+        ? `/practicals/${encodeURIComponent(practicalParam)}/${parentPathEncoded ? `${parentPathEncoded}/` : ''}${encodeURIComponent(previousItem.name)}`
+        : null;
+    const nextHref = nextItem
+        ? `/practicals/${encodeURIComponent(practicalParam)}/${parentPathEncoded ? `${parentPathEncoded}/` : ''}${encodeURIComponent(nextItem.name)}`
+        : null;
 
     return (
         <main className="main-content">
@@ -118,7 +130,7 @@ export default async function PracticalContentPage({ params }) {
                                         <FolderCard
                                             key={folder.sha}
                                             folder={folder}
-                                            href={`/practicals/${practicalParam}/${itemPath}/${folder.name}`}
+                                            href={`/practicals/${encodeURIComponent(practicalParam)}/${encodePathForUrl(itemPath)}/${encodeURIComponent(folder.name)}`}
                                         />
                                     ))}
                                 </div>
@@ -133,7 +145,7 @@ export default async function PracticalContentPage({ params }) {
                                     {items.filter(n => n.type !== 'dir').map(file => (
                                         <Link
                                             key={file.sha}
-                                            href={`/practicals/${practicalParam}/${itemPath}/${file.name}`}
+                                            href={`/practicals/${encodeURIComponent(practicalParam)}/${encodePathForUrl(itemPath)}/${encodeURIComponent(file.name)}`}
                                             style={{ textDecoration: 'none', color: 'inherit' }}
                                         >
                                             <NoteCard note={file} />
@@ -160,4 +172,3 @@ export default async function PracticalContentPage({ params }) {
         </main>
     );
 }
-

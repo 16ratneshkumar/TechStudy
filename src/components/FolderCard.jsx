@@ -1,20 +1,18 @@
 'use client';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
+/**
+ * Render a folder card with optional navigation and return-path support.
+ * @param {{ name: string }} folder - Folder data whose name is displayed on the card.
+ * @param {string} [href] - Destination URL for the card.
+ * @param {string} [backHref] - URL to append as an encoded `back` query parameter.
+ * @return {JSX.Element} The rendered folder card.
+ */
 export default function FolderCard({ folder, href, backHref }) {
-    const router = useRouter();
+    const target = backHref ? `${href}${href.includes('?') ? '&' : '?'}back=${encodeURIComponent(backHref)}` : href;
 
-    const handleCardClick = () => {
-        if (!href) return;
-        const target = backHref ? `${href}${href.includes('?') ? '&' : '?'}back=${encodeURIComponent(backHref)}` : href;
-        router.push(target);
-    };
-
-    return (
-        <div
-            className="folder-card"
-            onClick={handleCardClick}
-        >
+    const innerContent = (
+        <>
             {/* Animated Glare Effect */}
             <div className="folder-card-glare"></div>
             
@@ -58,6 +56,20 @@ export default function FolderCard({ folder, href, backHref }) {
                     </svg>
                 </div>
             </div>
-        </div>
+        </>
+    );
+
+    if (!href) {
+        return (
+            <div className="folder-card">
+                {innerContent}
+            </div>
+        );
+    }
+
+    return (
+        <Link href={target} className="folder-card" style={{ textDecoration: 'none', display: 'block' }}>
+            {innerContent}
+        </Link>
     );
 }

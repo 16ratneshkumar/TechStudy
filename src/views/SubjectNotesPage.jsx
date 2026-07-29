@@ -6,6 +6,12 @@ import repositoriesConfig from '@/data/repositories.json';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+/**
+ * Renders the notes page for a subject or course.
+ * @param {{ params: Promise<{ subject: string }>, searchParams: Promise<{ back?: string }> }} props - Route and query parameters.
+ * @returns {Promise<JSX.Element>} The subject notes page.
+ * @throws {Error} If notes cannot be loaded from the repository.
+ */
 export default async function SubjectNotesPage({ params, searchParams }) {
     const { subject: subjectParam } = await params;
     const resolvedSearchParams = await searchParams;
@@ -26,6 +32,7 @@ export default async function SubjectNotesPage({ params, searchParams }) {
         : null;
     const backPath = degreeBackPath || (typeof resolvedSearchParams?.back === 'string' && resolvedSearchParams.back ? resolvedSearchParams.back : '/notes');
     const noteBackPath = `/notes/${subjectParam}`;
+    const encodePathForUrl = (value = '') => value.split('/').map(encodeURIComponent).join('/');
 
     if (subject.progress === 'progress') {
         return (
@@ -99,7 +106,7 @@ export default async function SubjectNotesPage({ params, searchParams }) {
                                         <FolderCard
                                             key={folder.sha}
                                             folder={folder}
-                                            href={`/notes/${subjectParam}/${folder.path}?back=${encodeURIComponent(noteBackPath)}`}
+                                            href={`/notes/${encodeURIComponent(subjectParam)}/${encodePathForUrl(folder.path)}?back=${encodeURIComponent(noteBackPath)}`}
                                         />
                                     ))}
                                 </div>
@@ -115,7 +122,7 @@ export default async function SubjectNotesPage({ params, searchParams }) {
                                     {notes.filter(n => n.type !== 'dir').map(file => (
                                         <Link
                                             key={file.sha}
-                                            href={`/notes/${subjectParam}/${file.path}?back=${encodeURIComponent(noteBackPath)}`}
+                                            href={`/notes/${encodeURIComponent(subjectParam)}/${encodePathForUrl(file.path)}?back=${encodeURIComponent(noteBackPath)}`}
                                             style={{ textDecoration: 'none', color: 'inherit' }}
                                         >
                                             <NoteCard note={file} />
@@ -130,4 +137,3 @@ export default async function SubjectNotesPage({ params, searchParams }) {
         </main>
     );
 }
-

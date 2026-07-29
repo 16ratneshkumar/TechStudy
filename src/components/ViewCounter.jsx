@@ -2,51 +2,83 @@
 
 import { useEffect, useState } from 'react';
 
+/**
+ * Displays and records the view count for a slug.
+ * @param {string} slug - The identifier of the content whose views are displayed.
+ * @returns {JSX.Element} The loading, error, or formatted view count display.
+ */
 export default function ViewCounter({ slug }) {
     const [views, setViews] = useState(null);
 
     useEffect(() => {
-        // Track whether this specific note has been viewed in this session.
-        // Both sessionStorage accesses are guarded: SecurityError (thrown in
-        // restricted browsing contexts such as sandboxed iframes or strict
-        // incognito modes) is caught so it never escapes the effect.
         const sessionKey = `viewed_${slug}`;
 
         let alreadyViewed = false;
         try {
             alreadyViewed = !!sessionStorage.getItem(sessionKey);
-        } catch {
-            // Storage unavailable — treat as not-yet-viewed and proceed.
+        } catch (err) {
+            // ignore
         }
-        if (alreadyViewed) return;
 
-        const registerView = async () => {
+        const fetchViews = async () => {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => {
+                controller.abort();
+            }, 3000);
+
             try {
-                const res = await fetch('/api/views', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ slug }),
-                });
-
+                let res;
+                if (alreadyViewed) {
+                    res = await fetch(`/api/views?slug=${encodeURIComponent(slug)}`, { signal: controller.signal });
+                } else {
+                    res = await fetch('/api/views', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ slug }),
+                        signal: controller.signal
+                    });
+                }
+                
                 if (res.ok) {
                     const data = await res.json();
                     setViews(data.views);
-                    try {
-                        sessionStorage.setItem(sessionKey, 'true');
-                    } catch {
-                        // Storage unavailable — view count is still displayed;
-                        // the session dedup guard simply won't persist.
+                    if (!alreadyViewed) {
+                        try {
+                            sessionStorage.setItem(sessionKey, 'true');
+                        } catch (err) {
+                            // ignore
+                        }
                     }
+                } else {
+                    setViews('error');
                 }
+                clearTimeout(timeoutId);
             } catch (error) {
-                console.error('Failed to register view:', error);
+                clearTimeout(timeoutId);
+                console.error('Failed to fetch/register view:', error);
+                setViews('error');
             }
         };
 
-        registerView();
+        fetchViews();
     }, [slug]);
 
-    if (views === null) return null;
+    if (views === null) {
+        return (
+            <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <span className="spinner" style={{ width: '12px', height: '12px', border: '2px solid transparent', borderTopColor: 'currentColor', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></span>
+                Loading views...
+            </span>
+        );
+    }
+
+    if (views === 'error') {
+        return (
+            <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                Views N/A
+            </span>
+        );
+    }
 
     return (
         <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>

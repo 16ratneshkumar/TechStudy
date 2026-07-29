@@ -2,19 +2,51 @@
 
 import { useEffect, useState } from 'react';
 
+/**
+ * Renders a table of contents from headings in the provided HTML content.
+ * @param {Object} props - Component properties.
+ * @param {string} props.html - HTML content from which to extract headings.
+ * @returns {JSX.Element} A table of contents with navigation controls.
+ */
 export default function TableOfContents({ html }) {
     const [headings, setHeadings] = useState([]);
     const [activeId, setActiveId] = useState('');
 
-    // Parse headings from HTML string
+    // Parse headings from HTML string using Regex (highly reliable and browser-independent)
     useEffect(() => {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        const els = Array.from(doc.querySelectorAll('h1, h2, h3, h4'));
-        const parsed = els.map((el, i) => {
-            const id = el.id || `toc-heading-${i}`;
-            return { id, text: el.textContent.trim(), level: parseInt(el.tagName[1]) };
-        });
+        if (!html) {
+            setHeadings([]);
+            return;
+        }
+
+        // Simpler regex that supports newlines and does not use backreferences
+        const headingRegex = /<h([1-4])\b[^>]*>([\s\S]*?)<\/h[1-4]>/gi;
+        const parsed = [];
+        let match;
+        let index = 0;
+
+        try {
+            while ((match = headingRegex.exec(html)) !== null) {
+                const level = parseInt(match[1], 10);
+                const rawText = match[2].replace(/<[^>]*>/g, '');
+                const text = rawText
+                    .replace(/&amp;/g, '&')
+                    .replace(/&lt;/g, '<')
+                    .replace(/&gt;/g, '>')
+                    .replace(/&quot;/g, '"')
+                    .replace(/&#039;/g, "'");
+
+                parsed.push({
+                    id: `toc-heading-${index}`,
+                    text: text.trim(),
+                    level
+                });
+                index++;
+            }
+        } catch (e) {
+            console.error('Regex parse error:', e);
+        }
+
         setHeadings(parsed);
     }, [html]);
 
@@ -49,7 +81,16 @@ export default function TableOfContents({ html }) {
         return () => observer.disconnect();
     }, [headings]);
 
-    if (headings.length < 2) return null;
+    if (headings.length === 0) {
+        return (
+            <aside className="toc-sidebar" style={{ opacity: 0.5 }}>
+                <div className="toc-header">
+                    <span>Course Outline</span>
+                </div>
+                <div style={{ fontSize: '0.85rem', padding: '0.5rem 1rem' }}>No headings found</div>
+            </aside>
+        );
+    }
 
     const handleClick = (id) => {
         const el = document.getElementById(id);
